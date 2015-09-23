@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/task 
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 配置过滤器，过滤前台和Admin后台的URL -->
+	<bean id="securityInterceptor" class="com.vion.pc.helper.filter.SecurityFilter">
+		<property name="excludeURLs">
+			<list>
+				<value>/login</value>
+				<value>/admin/login.jsp</value>
+				<value>/admin/session-invalidate.jsp</value>
+				<value>/valid/validCode.do</value>
+				<value>/test</value>
+				<value>/deviceaccess</value>
+				<value>/entrance/login</value>
+				<value>/ui/index.html</value>
+				<value>/admin/systemConfig.jsp</value>
+				<value>/admin/system/setting/</value>
+			</list>
+		</property>
+		<property name="adminRedirectURL" value="/admin/session-invalidate.jsp"></property>
+	</bean>
+ 	<!--  -->
+ 	<bean name="RealTimeDataService" class="com.vion.pc.basic.http.RealTimeDataService">
+ 		<property name="detailUrl" value="http://218.241.227.146:5000/realtime_details"></property>
+ 		<property name="sumUrl" value="http://218.241.227.146:5000/realtime_sum"></property>
+ 		<property name="dayDate" value="day_date"></property>
+ 		<property name="cinemaId" value="cinema_id"></property>
+ 		<property name="audId" value="aud_id"></property>
+ 	</bean>
+ 	<bean name="RawDataService" class="com.vion.pc.service.RawDataService">
+ 		<property name="ip" value="127.0.0.1"></property>
+ 	</bean>
+ 	<task:scheduled-tasks>
+ 		<task:scheduled ref="RawDataService" method="readOrginal" cron="0 30 8 * * *"/>
+ 	</task:scheduled-tasks>
+ 	
+ 	<bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+		<property name="servers" value="192.168.9.7:11211" />
+		<property name="transcoder">
+			<bean class="net.spy.memcached.transcoders.SerializingTranscoder">
+				<property name="compressionThreshold" value="1024" />
+			</bean>
+		</property>
+		<property name="opTimeout" value="1000" />
+		<property name="timeoutExceptionThreshold" value="1998" />
+	</bean>
+	<!-- <bean id="socketServer" class="com.vion.pc.basic.mina.Server">
+		<property name="readBufferSize" value="2048"></property>
+		<property name="port" value="1000"></property>
+		<property name="idleTime" value="10"></property>
+	</bean> -->
+	<!-- 配置双数据源 <bean id="parentDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> <property 
+		name="testOnBorrow" value="true" /> <property name="defaultAutoCommit" value="false" /> <property name="maxWait" value="5000" 
+		/> </bean> <bean id="oltpDS" parent="parentDataSource"> <property name="driverClassName" value="#{sys['oltp.driverClassName']}" 
+		/> <property name="url" value="#{sys['oltp.url']}" /> <property name="username" value="#{sys['oltp.username']}" /> <property 
+		name="password" value="#{sys['oltp.password']}" /> </bean> <bean id="olapDS" parent="parentDataSource"> <property name="driverClassName" 
+		value="#{sys['olap.driverClassName']}" /> <property name="url" value="#{sys['olap.url']}" /> <property name="username" value="#{sys['olap.username']}" 
+		/> <property name="password" value="#{sys['olap.password']}" /> </bean> <bean id="dataSource" name="dataSource" class="com.vion.pc.helper.jdbc.DataSourcePlus"> 
+		<property name="targetDataSources"> <map key-type="java.lang.String"> <entry value-ref="oltpDS" key="OLTP"></entry> <entry 
+		value-ref="olapDS" key="OLAP"></entry> </map> </property> <property name="defaultTargetDataSource" ref="oltpDS"></property> 
+		</bean> -->
+	<!-- 开启这个配置，spring才能识别@Scheduled注解 定时任务 -->
+	<!-- <task:annotation-driven scheduler="qbScheduler" mode="proxy"/> <task:scheduler id="qbScheduler" pool-size="10"/> -->
+</beans>

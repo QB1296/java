@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm" 
+    xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+    xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" 
+    xmlns:smtps="http://www.mulesoft.org/schema/mule/smtps"
+    xmlns:email="http://www.mulesoft.org/schema/mule/email"
+    xmlns:servlet="http://www.mulesoft.org/schema/mule/servlet"
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xmlns:im="http://www.mulesoft.org/schema/mule/im"
+    xmlns:ivan="http://www.ivan.com/schema/mule/test"
+    xsi:schemaLocation="
+    	http://www.ivan.com/schema/mule/test http://www.ivan.com/schema/mule/test/ivan.xsd
+   		http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+    	http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/3.2/mule-jbossts.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/smtps http://www.mulesoft.org/schema/mule/smtps/current/mule-smtps.xsd
+        http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+        http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/servlet http://www.mulesoft.org/schema/mule/servlet/current/mule-servlet.xsd
+   		http://www.mulesoft.org/schema/mule/im http://www.mulesoft.org/schema/mule/im/mule-im.xsd">
+	
+	<!-- <flow name="client">
+		<http:inbound-endpoint address="#{sys['localPath']}/im" exchange-pattern="request-response" />
+		<im:send senderId="system" content="#[payload]" reveiverIds="userTest" channel="/service/privatechat"></im:send>
+	</flow>  -->
+    
+</mule>

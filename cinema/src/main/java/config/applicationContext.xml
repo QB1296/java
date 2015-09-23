@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/task 
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+    <import resource="classpath:config/applicationContext-excel.xml"/>
+    <!-- 支持注解的Bean扫描 -->   
+    <context:component-scan base-package="com">
+    	<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/> 
+    </context:component-scan>
+    
+    <util:properties id="sys" location="classpath:config/system.properties"/>
+    <util:properties id="hibernateProperties" location="classpath:config/hibernate.properties"/>
+    
+    <context:property-placeholder location="classpath:config/exception-message.properties" file-encoding="UTF-8"/>
+    
+     <bean class="com.vion.core.spring.PropertiesAccessor"></bean>
+    
+   <bean id="muleContextManager" class="com.vion.core.MuleContextManager"
+        destroy-method="shutdownBean">
+	    <property name="configurationFiles">
+	        <array>
+	            <value>config/applicationContext-mule.xml</value>
+	        </array>
+	    </property>
+	</bean> 
+	
+	<bean name="hibernateDao" class="com.ganjx.cinema.basic.CustomHibernateGeneralDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="sessionFactory"
+		class="com.vion.core.spring.SpiderLocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource"></ref>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.*</value>
+			</list>
+		</property>
+		<property name="mappingLocations">
+		 	<list>
+          		<value>classpath:/config/query/*.hbm.xml</value>
+       		</list>
+		 </property>
+		<property name="hibernateProperties" ref="hibernateProperties">
+		</property>
+	</bean>
+	
+	<!-- 不停用，使用双数据源配置  -->
+	<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="#{sys['jdbc.driverClassName']}" />
+		<property name="jdbcUrl" value="#{sys['jdbc.url']}" />
+		<property name="user" value="#{sys['jdbc.username']}" />
+		<property name="password" value="#{sys['jdbc.password']}" />
+		<property name="minPoolSize" value="20" /> 
+        <property name="maxPoolSize" value="20" /> 
+        <property name="initialPoolSize" value="20"/> 
+        <property name="maxIdleTime" value="0"/> 
+         <property name="acquireIncrement" value="20" /> 
+        <property name="maxStatements" value="1000" /> 
+        <property name="idleConnectionTestPeriod" value="60" /> 
+        <property name="acquireRetryAttempts" value="30" />
+        <property name="acquireRetryDelay" value="1000" />  
+        <property name="breakAfterAcquireFailure" value="false" /> 
+        <property name="testConnectionOnCheckout" value="false" /> 
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory">
+		</property>
+	</bean> 
+	
+	<bean class="com.vion.core.HibernateLoaderListener">
+		<!-- <property name="hqls">
+			<list>
+				<value>from VtpDictionary</value>
+			</list>
+		</property> -->
+	</bean>
+	
+	<!-- 支持 @Transactional 标记 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    
+    <aop:aspectj-autoproxy/>
+    <aop:config proxy-target-class="true"></aop:config>
+    
+    <task:annotation-driven executor="executor" scheduler="scheduler"/>
+	<task:executor id="executor" pool-size="20"/>
+	<task:scheduler id="scheduler" pool-size="10"/>
+	
+	<bean id="freemarkerConfig"  
+	      class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">  
+	    <property name="templateLoaderPath" value="/WEB-INF/" />  
+	    <property name="freemarkerSettings">  
+	        <props>   
+	            <prop key="template_update_delay">0</prop>  
+	            <prop key="default_encoding">UTF-8</prop>  
+	            <prop key="number_format">0.##########</prop>  
+	            <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>  
+	            <prop key="classic_compatible">true</prop>  
+	            <prop key="template_exception_handler">ignore</prop>  
+	        </props>  
+	    </property>  
+	</bean> 
+	
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="com.vion.core.hibernate.converter.StringToDateConverter"></bean>
+				<bean class="com.vion.core.hibernate.converter.TimestampToDateConverter"></bean>
+			</list>
+		</property>
+	</bean> 
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+   <bean class="com.ganjx.cinema.excel.CustomExcelImportsService">
+   		<property name="fileRepository" ref="localFileRepository"></property>
+   		<property name="recordProcessor" ref="asyncExcelRecordProcessor"></property>
+   		<property name="tempFilePath" value="C:\Users\Administrator\Desktop"></property>
+   </bean>
+
+   <bean class="com.vion.core.poi.ExcelExportsService">
+   		<property name="excelLoader" ref="springExcelLoader"></property>
+   		<property name="excelSpiElParser" ref="excelSpiElParser"></property>
+   </bean>
+   
+   <bean name="localFileRepository" class="com.vion.core.poi.LocalFileRepository"></bean>
+   <bean name="springExcelLoader" class="com.vion.core.poi.SpringExcelLoader"></bean>
+   <bean name="excelSpiElParser" class="com.vion.core.poi.ExcelSpiElParser"></bean>
+   <bean name="asyncExcelRecordProcessor" class="com.vion.core.poi.AsyncExcelRecordProcessor"></bean>
+    
+</beans>

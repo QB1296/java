@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premission-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					xmlns="http://www.vion.org/schema/premission"
+					xsi:schemaLocation="
+					http://www.vion.org/schema/premission  
+					http://www.vion.org/schema/premission/secure-premission.xsd
+					">
+	<moudle name="黑名单管理" code="black">
+	
+		<entitys>
+			<entity code="kb" table="KAKOU_BKXX"/>
+		</entitys>
+		
+		<rowRule pointCut="hmd" entity="kb" name="布控人" code="bkr" operate="equals">
+			<values>
+				<value key="本人布控" value="1">
+					<sql>${kb.CREATE_BY} = #{currentUser}</sql>
+				</value>
+			</values>
+		</rowRule>
+	</moudle>
+</premission-mapping>
