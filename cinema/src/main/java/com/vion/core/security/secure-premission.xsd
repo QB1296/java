@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns="http://www.vion.org/schema/premission"
+		   targetNamespace="http://www.vion.org/schema/premission"  
+		   elementFormDefault="qualified">
+  <xs:element name="premission-mapping">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="import"/>
+        <xs:element minOccurs="0" ref="pointcuts"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="moudle"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="defaultDataFunc"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+   
+  <xs:element name="import">
+  	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				导入其他配置文件
+		    ]]> 
+		  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="url" use="required" type="xs:anyURI">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				权限配置文件路径 'classpath:'classpath路径下、'context:'servletContext相对路径
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="defaultDataFunc">
+  	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				数据权限
+		    ]]> 
+		  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="nodes">
+        	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					数据权限规则节点、多个规则节点组成数据权限
+			    ]]> 
+			  </xs:documentation>
+			</xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="moudle" use="required" type="xs:string">
+      	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					模块
+			    ]]> 
+			  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" use="required" type="xs:string">
+      	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					名称
+			    ]]> 
+			  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="id" use="required" type="xs:string">
+      	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					数据权限唯一标识,数据权限用此字段和角色关联
+			    ]]> 
+			  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="default" use="optional" type="true_false">
+      	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					是否是缺省的数据权限、如果true所有人都有此权限
+			    ]]> 
+			  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="nodes">
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="node"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="node">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			数据规则节点
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="column" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				对应rowRule的code、或column的code
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="operate" use="required" type="operate_type"/>
+      <xs:attribute name="value" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				如果rowRule对应select sqls节点、为select key值，
+				如果单个SQL则匹配sql中的占位符 #{value}
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="moudle">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			模块
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="entitys">
+        	<xs:annotation>
+			  <xs:documentation>
+			    <![CDATA[ 
+					模块中涉及的实体
+			    ]]> 
+			  </xs:documentation>
+			</xs:annotation>
+        </xs:element>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="rowRule"/>
+      </xs:sequence>
+      <xs:attribute name="code" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				模块代码
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				模块名称
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pointcuts">
+ 	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			切入点列表
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="pointcut" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pointcut" >
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			切入点
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+  	<xs:complexType>
+      <xs:attribute name="code" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				切入点代码
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="value" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				切入点值,参考AspectJ pointCut表达式
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entitys">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="entity"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entity">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			实体
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="column"/>
+      </xs:sequence>
+      <xs:attribute name="code" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				实体代码
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="table" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				表名称
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="column">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			列，对应数据库表中的一列
+	    ]]> 
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="valueConfig"/>
+      </xs:sequence>
+      <xs:attribute name="code" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				列代码
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				列名称
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="operate" use="required" type="operate_type">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				操作
+		    ]]> 
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+   <xs:element name="valueConfig">
+   	<xs:annotation>
+		<xs:documentation>
+		    <![CDATA[ 
+				rowRule值基础信息配置
+		    ]]>
+		</xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="type" use="required" type="valueType">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					值类型
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueMsg" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					值验证错误信息提示
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueProcessor" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					处理此值的ValueProcessor处理器
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueRule" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					规则 可以是正则表达式，需要和前端解析联合确定
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dataUrl" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					数据URL来源
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:group name="sqlValueConfig">
+	 <xs:sequence>
+	  <xs:element ref="sql"/>
+	  <xs:element ref="valueConfig"/>
+	 </xs:sequence>
+  </xs:group>
+  <xs:group name="assistTableConfig">
+	 <xs:sequence>
+	  <xs:element ref="assistTable"/>
+	  <xs:element ref="valueConfig"/>
+	 </xs:sequence>
+  </xs:group>
+  <xs:element name="rowRule">
+  	<xs:annotation>
+		<xs:documentation>
+		    <![CDATA[ 
+				数据行规则限制,规则限制加上确定的数据组成了规则节点,多个规则节点组成了数据权限
+		    ]]>
+		</xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" ref="cacheFilter"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="join"/>
+        <xs:choice>
+        	<xs:element ref="values"/>
+        	<xs:group ref="sqlValueConfig"/>
+        	<xs:group ref="assistTableConfig"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="pointCut" use="required" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					切入点，多个用“,”分割
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="excludePointCut" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					不过滤的切入点，多个用“,”分割
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="joinFilter" use="optional" type="true_false">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					是否过滤join从表中的数据
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="code" use="required" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					规则限制代码
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="entity" use="required" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					实体代码
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" use="required" type="xs:string"/>
+      <xs:attribute name="operate" use="required" type="operate_type"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="cacheFilter">
+  	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					过滤内存数据集合
+			    ]]>
+			</xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="affectSQLFilter" use="optional" type="xs:string">
+      	<xs:annotation>
+			<xs:documentation>
+			    <![CDATA[ 
+					是否影响SQL过滤，如果true，rowRule将不过滤sql
+			    ]]>
+			</xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="values">
+  	<xs:annotation>
+		<xs:documentation>
+		    <![CDATA[ 
+				值列表，对应select type
+		    ]]>
+		</xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="value"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="join">
+    <xs:annotation>
+		<xs:documentation>
+		    <![CDATA[ 
+				关联其他表
+		    ]]>
+		</xs:documentation>
+	</xs:annotation>
+   <xs:complexType>
+      <xs:attribute name="name" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+		    	关联表名称
+		    ]]>
+		  </xs:documentation>
+	    </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="forceJoin" type="true_false">
+      	 <xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				是否强迫关联关系表；例如 select t.* from T_USER t 
+				如果 joinSQL = ${role.id} = ${user.role_id}、
+				name = T_ROLE、joinType = left
+				新的SQL为：select t.* from T_USER t left join T_ROLE assist
+				on  assist.id = t.role_id
+		    ]]>
+		  </xs:documentation>
+	    </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="joinSQL" use="optional" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				joinSQL 例如：${role.id} = ${user.role_id}
+		    ]]>
+		  </xs:documentation>
+	    </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="joinType" use="optional" default="left" type="joinType">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				连接类型
+		    ]]>
+		  </xs:documentation>
+	    </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="value">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			数据规则的数值
+	    ]]>
+	  </xs:documentation>
+	</xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="sql"/>
+      </xs:sequence>
+      <xs:attribute name="key" use="required" type="xs:string">
+      	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				value key值
+		    ]]>
+		  </xs:documentation>
+		</xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sql" type="xs:string">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			where 表达式
+	    ]]>
+	  </xs:documentation>
+	</xs:annotation>
+  </xs:element>
+  
+  
+  
+  <xs:element name="assistTable">
+  	<xs:annotation>
+	  <xs:documentation>
+	    <![CDATA[ 
+			辅助表
+	    ]]>
+	  </xs:documentation>
+	</xs:annotation>
+  	<xs:complexType>
+  	  <xs:attribute name="code" use="required" type="xs:string">
+  	  	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				代码
+		    ]]>
+		  </xs:documentation>
+		</xs:annotation>
+  	  </xs:attribute>
+  	  <xs:attribute name="resourceColumn" use="required" type="xs:string">
+  	  	<xs:annotation>
+		  <xs:documentation>
+		    <![CDATA[ 
+				业务表列名称
+		    ]]>
+		  </xs:documentation>
+		</xs:annotation>
+  	  </xs:attribute>
+  	</xs:complexType>
+  </xs:element>
+  
+  
+   <xs:simpleType name="operate_type">
+  	 <xs:list itemType="listOperate"> </xs:list>
+  </xs:simpleType>
+  
+  
+  <xs:simpleType name="listOperate">
+  	<xs:restriction base="xs:NMTOKEN">  
+        <xs:enumeration value="equals" /> 
+        <xs:enumeration value="greaterThan"/>  
+        <xs:enumeration value="lessThan"/>  
+        <xs:enumeration value="like"/>  
+        <xs:enumeration value="in"/>  
+    </xs:restriction>  
+  </xs:simpleType>
+  
+  <xs:simpleType name="true_false">
+  	<xs:restriction base="xs:NMTOKEN">  
+        <xs:enumeration value="true" /> 
+        <xs:enumeration value="false"/>  
+    </xs:restriction>  
+  </xs:simpleType>
+  
+  <xs:simpleType name="valueType">
+  	<xs:restriction base="xs:NMTOKEN">  
+        <xs:enumeration value="text" /> 
+        <xs:enumeration value="dataTime"/>  
+        <xs:enumeration value="data"/>  
+        <xs:enumeration value="tree"/>  
+        <xs:enumeration value="checkBox"/>  
+    </xs:restriction>  
+  </xs:simpleType>
+  
+  
+   <xs:simpleType name="joinType">
+  	<xs:restriction base="xs:NMTOKEN">  
+        <xs:enumeration value="left" /> 
+        <xs:enumeration value="right"/>  
+        <xs:enumeration value="inner"/>  
+        <xs:enumeration value="full"/>  
+    </xs:restriction>  
+  </xs:simpleType>
+  
+</xs:schema>

@@ -1,0 +1,62 @@
+/**
+ * 文件名： KdmCinemaService.java
+ *  
+ * 版本信息：  
+ * 日期：2015年11月30日 
+ * Copyright(c) 2015 VIONVISION &  CO.,LTD , http://www.vion-tech.com/ <br>
+ * 版权所有  
+ */
+package com.ganjx.cinema.service;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ganjx.cinema.entity.Cinema;
+import com.ganjx.cinema.entity.KdmCinema;
+import com.vion.core.dao.IGeneralDAO;
+
+/**
+ * <b>功能描述</b> <br>
+ * 
+ * @author GANJX
+ * @date 2015年11月30日 下午6:09:47
+ */
+@Service
+@Transactional
+public class KdmCinemaService {
+
+	
+	Logger logger = LoggerFactory.getLogger(KdmCinemaService.class);
+	
+	@Autowired
+	IGeneralDAO generalDAO;
+	@Autowired
+	CinemaService cinemaService;
+	
+	@Transactional(readOnly=false)
+	public void process() {
+		List<KdmCinema> findAll = generalDAO.findAll(KdmCinema.class);
+		for (KdmCinema kdmCinema : findAll) {
+//			Logger.info("{}",kdmCinema);
+			single(kdmCinema);
+		}
+	}
+	
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW)
+	public void single(KdmCinema kdmCinema) {
+		Cinema findByCinemaCode = cinemaService.findByCinemaCode(kdmCinema.getCinemaCode());
+		if(findByCinemaCode == null){
+			logger.info("{}",kdmCinema.getCinemaCode());
+		}
+		else{
+			kdmCinema.setCinemaName(findByCinemaCode.getCinemaName());
+			kdmCinema.setLstatus(1);
+		}
+	}
+}

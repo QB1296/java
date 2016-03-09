@@ -1,0 +1,9 @@
+jdbc.url=用户{0}登陆异常,请重新登陆
+
+ERROR_1=访问外部系统异常{0}
+BKXX_ALREADY_EXISTS=此时间段已存在号牌为:{0}的布控信息
+BKXX_NOT_EXISTS=编号为:{0}的布控信息不存在
+SPECIAL_WHITELIST_EXISTS=此种车辆类型下已存在相同的名单:{0}
+SPECIAL_TRUCK_WHITELIST_EXISTS=已存在货车号牌信息为:{0}的记录
+LIMITRULE_YELLOWCAR_EXISTS=此种号牌种类已存在相同的号牌号码:{0}
+UPDATE_USER_PASSWORD={0}错误

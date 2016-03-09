@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+    
+	<bean id="secureMetaLoader" class="com.vion.core.security.SecureMetaLoader">
+		<property name="configLocation">
+			<value>classpath:config/premission-Config.xml</value>
+		</property>
+	</bean>
+	
+	
+	<bean id="secureContext" class="com.vion.core.security.SecureContext">
+		<property name="sqlRuleFilterProcessor" ref="sqlRuleFilterProcessor">
+		</property>
+	</bean>
+	
+	<bean id="secureSubjectHolder"  class="com.ganjx.cinema.basic.security.CustomSecureSubjectHolder"/>
+	
+	
+	<bean id="sqlRuleFilterProcessor"  class="com.vion.core.security.SQLRuleFilterProcessor">
+		<property name="secureSubjectHolder" ref="secureSubjectHolder">
+		</property>
+		<property name="valueProcessors">
+			<list>
+				<bean class="com.vion.core.security.DateProcessor" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="InValuesProcessor" class="com.vion.core.security.InValuesProcessor"></bean>
+	
+	
+	<bean id="secureSessionRepository" class="com.vion.core.security.session.MemorySecureSessionRepository">
+		<property name="secureSessionFactory">
+			<bean class="com.vion.core.security.session.DefaultSecureSessionFactory"></bean>
+		</property>
+	</bean>
+	
+	<bean id="secureSessionManager" scope="singleton" class="com.vion.core.security.session.DefaultSecureSessionManager">
+		<property name="secureSessionRepository" ref="secureSessionRepository">
+		</property>
+		<property name="secureSessionListeners">
+			<list>
+				
+			</list>
+		</property>
+	
+	</bean>
+	
+	<bean id="secureTouchSessionInterceptor" class="com.vion.core.security.session.SecureCompositeTouchSessionFilter">
+		 <property name="excludeURLs" >
+		 	<list>
+		 		 <value>login.do</value>  
+		 	</list>
+		 </property>
+		 <property name="sessionTokenKey" value="jsessionId"></property>
+		 <property name="sessionTokenType" value="param"></property>
+		 <property name="secureSessionManager" ref="secureSessionManager"></property>
+	</bean>
+	
+	
+	
+</beans>

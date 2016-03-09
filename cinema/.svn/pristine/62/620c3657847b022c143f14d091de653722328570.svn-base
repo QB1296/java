@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premission-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					xmlns="http://www.vion.org/schema/premission"
+					xsi:schemaLocation="
+					http://www.vion.org/schema/premission  
+					http://www.vion.org/schema/premission/secure-premission.xsd
+					">
+
+	<moudle name="通用影院管理管理" code="cinemaMoudle">
+		<entitys>
+			<entity code="group" table="VTP_GROUP"/>
+			<entity code="schedule" table="T_SCHEDULE"/>
+			<entity code="original" table="t_original"/>
+		</entitys>
+		
+		<!-- 本部门卡口约束 start -->
+		<rowRule pointCut="all" excludePointCut="" entity="group" name="监控区域" code="curGroup" operate="equals">
+			<values>
+				<value key="当前权限" value="UNKNOWS">
+					<sql>${group.groupnum} in(#{cinemaIds})</sql>
+				</value>
+			</values>
+		</rowRule>
+		
+		<rowRule pointCut="all" excludePointCut="" entity="schedule" name="档期" code="curSchedule" operate="equals">
+			<values>
+				<value key="影院标识" value="UNKNOWS">
+					<sql>${schedule.cinema_id} in(#{cinemaIds})</sql>
+				</value>
+			</values>
+		</rowRule>
+		
+		<rowRule pointCut="all" excludePointCut="" entity="original" name="原始数据" code="curOriginal" operate="equals">
+			<values>
+				<value key="影院标识" value="UNKNOWS">
+					<sql>${original.cinema_id} in(#{cinemaIds})</sql>
+				</value>
+			</values>
+		</rowRule>
+	</moudle>
+</premission-mapping>

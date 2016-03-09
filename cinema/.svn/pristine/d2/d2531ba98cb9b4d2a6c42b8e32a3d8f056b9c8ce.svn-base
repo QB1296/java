@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<premission-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					xmlns="http://www.vion.org/schema/premission"
+					xsi:schemaLocation="
+					http://www.vion.org/schema/premission  
+					http://www.vion.org/schema/premission/secure-premission.xsd
+					">
+	<import url="classpath:config/premission-kakou.xml"></import>
+	
+	<pointcuts>
+			<pointcut code="all" value="execution(public * com.vion.pc.dao..*.*(..))"></pointcut>
+	</pointcuts>
+		
+    <!-- 影院约束 start -->
+	<defaultDataFunc moudle="cinemaMoudle" name="影院数据权限" id="CINEMA_DATA" default="true">
+		<nodes>
+			<node column="curGroup" operate="equals" value="UNKNOWS"/>
+			<node column="curSchedule" operate="equals" value="UNKNOWS"/>
+			<node column="curOriginal" operate="equals" value="UNKNOWS"/>
+		</nodes>
+	</defaultDataFunc>
+	 <!-- 影院约束 end -->
+	
+</premission-mapping>
